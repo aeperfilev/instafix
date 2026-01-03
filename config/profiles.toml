@@ -22,6 +22,7 @@ color = "#383838"
 
 [backgrounds.average]
 type = "average"
+darken = 0.4
 
 [backgrounds.stretch]
 type = "stretch"
@@ -70,10 +71,10 @@ from_list = ["square", "portrait", "landscape"]
 
 # --- Profiles ---
 [profiles.default]
-background_ref = "solid_black"
+background_ref = "average"
 watermark_ref = "standard"
 format_ref = "auto"
-padding_percent = 3.0
+padding_percent = 0.0
 no_upscale = true
 
 [profiles.black]
@@ -132,20 +133,29 @@ format_ref = "auto"
 padding_percent = 3.0
 no_upscale = true
 
-[profiles.white_passepartout]
-background_ref = "solid_white"
+[profiles.average_frame]
+background_ref = "average"
 watermark_ref = "standard"
-format_ref = "square"
-padding_percent = 7.0
+format_ref = "auto"
+padding_percent = 3.0
 border_width = 1
 border_color = "#000000"
 no_upscale = true
 
-[profiles.black_passepartout]
+[profiles.white_frame]
+background_ref = "solid_white"
+watermark_ref = "standard"
+format_ref = "square"
+padding_percent = 3.0
+border_width = 1
+border_color = "#000000"
+no_upscale = true
+
+[profiles.black_frame]
 background_ref = "solid_black"
 watermark_ref = "standard"
 format_ref = "square"
-padding_percent = 7.0
+padding_percent = 3.0
 border_width = 1
 border_color = "#ffffff"
 no_upscale = true
