@@ -1,6 +1,6 @@
 # --- Global settings ---
 [settings]
-jpeg_quality = 100
+jpeg_quality = 95 # JPEG quality (1-100), but if use 100, Instagram may recompress more aggressively
 assets_path = "./assets"
 
 # --- Registry: Backgrounds ---
@@ -71,7 +71,7 @@ from_list = ["square", "portrait", "landscape"]
 
 # --- Profiles ---
 [profiles.default]
-background_ref = "average"
+background_ref = "black"
 watermark_ref = "standard"
 format_ref = "auto"
 padding_percent = 0.0
@@ -158,4 +158,26 @@ format_ref = "square"
 padding_percent = 3.0
 border_width = 1
 border_color = "#ffffff"
+no_upscale = true
+
+# --- Profiles Recommendation ---
+
+# 1. THE KING: Для стрита и Ricoh. Темный фон, жирное паспарту.
+# Выглядит дорого, не слепит, акцент на фото.
+[profiles.street]
+background_ref = "solid_dark"
+watermark_ref = "standard"
+format_ref = "portrait"
+padding_percent = 8.0
+no_upscale = true
+
+# 2. THE CLEAN: Белое паспарту (Gallery style).
+# Хорошо для светлых, воздушных кадров.
+[profiles.clean]
+background_ref = "solid_white"
+watermark_ref = "standard"
+format_ref = "portrait"
+padding_percent = 5.0
+border_width = 1
+border_color = "#e0e0e0"
 no_upscale = true
