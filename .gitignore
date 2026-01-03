@@ -12,3 +12,7 @@ instafix
 vendor/
 
 testdata/
+
+# Ensure pkg sources are tracked even if ignored globally
+!pkg/
+!pkg/**
