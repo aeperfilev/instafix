@@ -2,6 +2,8 @@ module github.com/aeperfilev/instafix
 
 go 1.25.0
 
+replace github.com/aeperfilev/instafix => .
+
 require (
 	github.com/BurntSushi/toml v1.6.0
 	github.com/disintegration/imaging v1.6.2
