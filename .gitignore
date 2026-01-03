@@ -1,0 +1,14 @@
+# Binaries
+instafix
+
+# OS specific
+.DS_Store
+
+# IDE
+.idea/
+.vscode/
+
+# Vendoring
+vendor/
+
+testdata/
