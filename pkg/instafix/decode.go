@@ -23,7 +23,15 @@ func DecodeImage(r io.Reader, filename string) (image.Image, error) {
 	case ".dng", ".raw":
 		return decodeDNGPreview(data)
 	default:
-		return imaging.Decode(bytes.NewReader(data), imaging.AutoOrientation(true))
+		img, err := imaging.Decode(bytes.NewReader(data), imaging.AutoOrientation(true))
+		if err == nil {
+			return img, nil
+		}
+		// Fallback: try to parse embedded JPEG if body contains one (Tasker/raw uploads).
+		if preview, perr := decodeDNGPreview(data); perr == nil {
+			return preview, nil
+		}
+		return nil, err
 	}
 }
 

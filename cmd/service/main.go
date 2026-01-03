@@ -3,6 +3,8 @@ package main
 import (
 	"errors"
 	"flag"
+	"fmt"
+	"image"
 	"net/http"
 	"os"
 	"strings"
@@ -59,22 +61,28 @@ func handleFix(c *gin.Context, processor *instafix.Processor) {
 	profileName := strings.TrimSpace(c.DefaultQuery("profile", "default"))
 	watermark := c.Query("watermark")
 
-	fileHeader, err := c.FormFile("image")
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "image is required"})
-		return
-	}
+	var srcImg image.Image
+	var err error
 
-	file, err := fileHeader.Open()
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "unable to read image"})
-		return
+	if fileHeader, errMultipart := c.FormFile("image"); errMultipart == nil {
+		file, errOpen := fileHeader.Open()
+		if errOpen != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "unable to read image file"})
+			return
+		}
+		defer file.Close()
+		srcImg, err = instafix.DecodeImage(file, fileHeader.Filename)
+	} else {
+		if c.Request.Body == nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "empty request body"})
+			return
+		}
+		defer c.Request.Body.Close()
+		srcImg, err = instafix.DecodeImage(c.Request.Body, "")
 	}
-	defer file.Close()
-
-	srcImg, err := instafix.DecodeImage(file, fileHeader.Filename)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid image format"})
+		logRequestError(c, err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid image format or decode failed: " + err.Error()})
 		return
 	}
 
@@ -84,6 +92,7 @@ func handleFix(c *gin.Context, processor *instafix.Processor) {
 		if !isUserError(err) {
 			status = http.StatusInternalServerError
 		}
+		logRequestError(c, err)
 		c.JSON(status, gin.H{"error": err.Error()})
 		return
 	}
@@ -120,4 +129,19 @@ func authMiddleware() gin.HandlerFunc {
 func isUserError(err error) bool {
 	var userErr instafix.UserError
 	return errors.As(err, &userErr)
+}
+
+func logRequestError(c *gin.Context, err error) {
+	contentType := c.GetHeader("Content-Type")
+	profile := c.DefaultQuery("profile", "default")
+	watermark := c.Query("watermark")
+	bodyLen := 0
+	if c.Request != nil && c.Request.ContentLength > 0 {
+		bodyLen = int(c.Request.ContentLength)
+	}
+	c.Error(err)
+	gin.DefaultErrorWriter.Write([]byte(
+		fmt.Sprintf("fix error: %v | content_type=%s profile=%s watermark=%q body_len=%d\n",
+			err, contentType, profile, watermark, bodyLen),
+	))
 }
