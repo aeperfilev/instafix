@@ -52,25 +52,19 @@ func drawBackground(dc *gg.Context, src image.Image, bg config.Background, width
 		avg := averageColor(src)
 		dc.SetRGBA(float64(avg.R)/255.0, float64(avg.G)/255.0, float64(avg.B)/255.0, 1.0)
 		dc.Clear()
+		applyDarken(dc, width, height, bg.Darken)
 	case "stretch":
 		stretched, err := stretchBackground(src, fitted, width, height, fitX, fitY)
 		if err != nil {
 			return
 		}
 		dc.DrawImage(stretched, 0, 0)
+		applyDarken(dc, width, height, bg.Darken)
 	case "blur":
 		bgFill := imaging.Fill(src, width, height, imaging.Center, imaging.Lanczos)
 		blurred := imaging.Blur(bgFill, bg.BlurRadius)
 		dc.DrawImage(blurred, 0, 0)
-		if bg.Darken > 0 {
-			darken := bg.Darken
-			if darken > 1 {
-				darken = 1
-			}
-			dc.SetRGBA(0, 0, 0, darken)
-			dc.DrawRectangle(0, 0, float64(width), float64(height))
-			dc.Fill()
-		}
+		applyDarken(dc, width, height, bg.Darken)
 	default:
 		dc.SetRGB(0, 0, 0)
 		dc.Clear()
@@ -232,4 +226,16 @@ func fillRect(dst draw.Image, rect image.Rectangle, c color.NRGBA) {
 		return
 	}
 	draw.Draw(dst, rect, image.NewUniform(c), image.Point{}, draw.Src)
+}
+
+func applyDarken(dc *gg.Context, width, height int, darken float64) {
+	if darken <= 0 {
+		return
+	}
+	if darken > 1 {
+		darken = 1
+	}
+	dc.SetRGBA(0, 0, 0, darken)
+	dc.DrawRectangle(0, 0, float64(width), float64(height))
+	dc.Fill()
 }
