@@ -20,8 +20,19 @@ func main() {
 		addr       string
 	)
 	flag.StringVar(&configPath, "config", "", "Path to profiles.toml (optional)")
-	flag.StringVar(&addr, "addr", ":8080", "Listen address")
+	flag.StringVar(&addr, "addr", "", "Listen address (defaults to :8080 or :$PORT)")
 	flag.Parse()
+
+	if strings.TrimSpace(addr) == "" {
+		port := strings.TrimSpace(os.Getenv("PORT"))
+		if port == "" {
+			addr = ":8080"
+		} else if strings.HasPrefix(port, ":") {
+			addr = port
+		} else {
+			addr = ":" + port
+		}
+	}
 
 	cfg, err := loadConfig(configPath)
 	if err != nil {

@@ -60,6 +60,11 @@ go build -o instafix-server ./cmd/service
 API_KEY=secret ./instafix-server --config config/profiles.toml --addr :8080
 ```
 
+**Railway:**
+
+- Используется `PORT` (Railway подставляет сам), если `--addr` не задан.
+- Опциональные переменные: `API_KEY`, `INSTAFIX_CONFIG`.
+
 **API:**
 
 - `POST /fix` (multipart form‑поле `image`)
