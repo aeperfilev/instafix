@@ -36,21 +36,22 @@ type Settings struct {
 }
 
 type Profile struct {
-	BackgroundRef  string  `toml:"background_ref"`
-	WatermarkRef   string  `toml:"watermark_ref"`
-	FormatRef      string  `toml:"format_ref"`
-	PaddingPercent float64 `toml:"padding_percent"`
-	BorderWidth    int     `toml:"border_width"`
-	BorderColor    string  `toml:"border_color"`
-	NoUpscale      bool    `toml:"no_upscale"`
-	JpegQuality    int     `toml:"jpeg_quality"`
+	BackgroundRef  string   `toml:"background_ref"`
+	WatermarkRef   string   `toml:"watermark_ref"`
+	FormatRef      string   `toml:"format_ref"`
+	PaddingPercent *float64 `toml:"padding_percent"`
+	BorderWidth    int      `toml:"border_width"`
+	BorderColor    string   `toml:"border_color"`
+	NoUpscale      bool     `toml:"no_upscale"`
+	JpegQuality    int      `toml:"jpeg_quality"`
 }
 
 type Format struct {
-	Type     string   `toml:"type"`
-	Width    int      `toml:"width"`
-	Height   int      `toml:"height"`
-	FromList []string `toml:"from_list"`
+	Type           string   `toml:"type"`
+	Width          int      `toml:"width"`
+	Height         int      `toml:"height"`
+	FromList       []string `toml:"from_list"`
+	PaddingPercent float64  `toml:"padding_percent"`
 }
 
 type Background struct {
@@ -216,6 +217,9 @@ func (c Config) validateProfile(name string, profile Profile) error {
 	if profile.JpegQuality != 0 && (profile.JpegQuality < 1 || profile.JpegQuality > 100) {
 		return fmt.Errorf("profiles.%s.jpeg_quality out of range: %d", name, profile.JpegQuality)
 	}
+	if profile.PaddingPercent != nil && (*profile.PaddingPercent < 0 || *profile.PaddingPercent > 50) {
+		return fmt.Errorf("profiles.%s.padding_percent must be 0..50", name)
+	}
 	return nil
 }
 
@@ -264,13 +268,18 @@ func (c Config) ResolveProfile(name string) (ResolvedProfile, error) {
 		assetsPath = "assets"
 	}
 
+	paddingPercent := format.PaddingPercent
+	if profile.PaddingPercent != nil {
+		paddingPercent = *profile.PaddingPercent
+	}
+
 	return ResolvedProfile{
 		Name:           name,
 		Background:     background,
 		Watermark:      watermark,
 		Format:         format,
 		FormatName:     profile.FormatRef,
-		PaddingPercent: profile.PaddingPercent,
+		PaddingPercent: paddingPercent,
 		BorderWidth:    profile.BorderWidth,
 		BorderColor:    profile.BorderColor,
 		NoUpscale:      profile.NoUpscale,
@@ -297,6 +306,9 @@ func validateFormat(name string, format Format) error {
 		}
 	default:
 		return fmt.Errorf("formats.%s has unknown type: %s", name, format.Type)
+	}
+	if format.PaddingPercent < 0 || format.PaddingPercent > 50 {
+		return fmt.Errorf("formats.%s.padding_percent must be 0..50", name)
 	}
 	return nil
 }

@@ -1,28 +1,34 @@
 # --- Global settings ---
+
 [settings]
 jpeg_quality = 95 # JPEG quality (1-100), but if use 100, Instagram may recompress more aggressively
 assets_path = "./assets"
 
 # --- Registry: Backgrounds ---
+
 [backgrounds.solid_black]
 type = "solid"
 color = "#000000"
+
+[backgrounds.solid_coffee]
+type = "solid"
+color = "#4a443f"
 
 [backgrounds.solid_white]
 type = "solid"
 color = "#ffffff"
 
-[backgrounds.solid_light]
+[backgrounds.solid_gallery]
 type = "solid"
-color = "#e7e7e7"
+color = "#f5f5f5"
 
 [backgrounds.solid_dark]
 type = "solid"
-color = "#383838"
+color = "#2c2c2c"
 
 [backgrounds.average]
 type = "average"
-darken = 0.4
+darken = 0.35
 
 [backgrounds.stretch]
 type = "stretch"
@@ -30,150 +36,164 @@ type = "stretch"
 [backgrounds.blur]
 type = "blur"
 blur_radius = 40.0
-darken = 0.4
+darken = 0.35
 
 # --- Registry: Watermarks (style only, text provided at runtime) ---
-[watermarks.standard]
+
+[watermarks.signature_light]
 font = "Roboto-Bold.ttf"
-size = 14
+size = 12
 color = "#f0f0f0"
-opacity = 0.5
+opacity = 0.25
 align = "bottom-center"
-offset_y = 24
-outline = true
-outline_color = "#0f0f0f"
-outline_width = 1
+offset_y = 20
+outline = false
+
+[watermarks.signature_dark]
+font = "Roboto-Bold.ttf"
+size = 12
+color = "#2c2c2c"
+opacity = 0.3
+align = "bottom-center"
+offset_y = 20
+outline = false
 
 # --- Registry: Formats ---
+
 [formats.square]
 type = "fixed"
 width = 1080
 height = 1080
+padding_percent = 0.0
 
 [formats.portrait]
 type = "fixed"
 width = 1080
 height = 1350
+padding_percent = 0.0
 
 [formats.landscape]
 type = "fixed"
 width = 1080
 height = 566
+padding_percent = 0.0
 
 [formats.story]
 type = "fixed"
 width = 1080
 height = 1920
+padding_percent = 0.0
+
+[formats.square_padded]
+type = "fixed"
+width = 1080
+height = 1080
+padding_percent = 3.0
+
+[formats.portrait_padded]
+type = "fixed"
+width = 1080
+height = 1350
+padding_percent = 3.0
+
+[formats.landscape_padded]
+type = "fixed"
+width = 1080
+height = 566
+padding_percent = 3.0
+
+[formats.story_padded]
+type = "fixed"
+width = 1080
+height = 1920
+padding_percent = 3.0
 
 [formats.auto]
 type = "auto"
 from_list = ["square", "portrait", "landscape"]
+padding_percent = 0.0
+
+[formats.auto_padded]
+type = "auto"
+from_list = ["square_padded", "portrait_padded", "landscape_padded"]
+padding_percent = 0.0
 
 # --- Profiles ---
+
 [profiles.default]
-background_ref = "solid_black"
-watermark_ref = "standard"
-format_ref = "auto"
-padding_percent = 0.0
-no_upscale = true
-
-[profiles.black]
-background_ref = "solid_black"
-watermark_ref = "standard"
-format_ref = "auto"
-padding_percent = 3.0
-no_upscale = true
-
-[profiles.white]
-background_ref = "solid_white"
-watermark_ref = "standard"
-format_ref = "auto"
-padding_percent = 3.0
-no_upscale = true
-
-[profiles.dark]
 background_ref = "solid_dark"
-watermark_ref = "standard"
-format_ref = "auto"
-padding_percent = 3.0
+watermark_ref = "signature_light"
+format_ref = "auto_padded"
 no_upscale = true
 
-[profiles.light]
-background_ref = "solid_light"
-watermark_ref = "standard"
-format_ref = "auto"
-padding_percent = 3.0
+[profiles.base_dark]
+background_ref = "solid_dark"
+watermark_ref = "signature_light"
+format_ref = "auto_padded"
+no_upscale = true
+
+[profiles.base_light]
+background_ref = "solid_gallery"
+watermark_ref = "signature_dark"
+format_ref = "auto_padded"
+no_upscale = true
+
+[profiles.street_bw]
+background_ref = "solid_black"
+watermark_ref = "signature_light"
+format_ref = "portrait"
+padding_percent = 7.0
+border_width = 1
+border_color = "#1a1a1a" # Глубокая тень вокруг кадра
+no_upscale = true
+
+[profiles.street_color]
+background_ref = "solid_dark"
+watermark_ref = "signature_light"
+format_ref = "portrait"
+padding_percent = 6.0
+border_width = 1
+border_color = "#1a1a1a"
+no_upscale = true
+
+[profiles.retro_warm]
+background_ref = "solid_coffee"
+watermark_ref = "signature_light"
+format_ref = "portrait"
+padding_percent = 6.0
+border_width = 1
+border_color = "#2c2c2c"
+no_upscale = true
+
+[profiles.film_matte]
+background_ref = "solid_gallery"
+watermark_ref = "signature_dark"
+format_ref = "portrait"
+padding_percent = 7.0
+border_width = 1
+border_color = "#dcdcdc"
 no_upscale = true
 
 [profiles.blur]
 background_ref = "blur"
-watermark_ref = "standard"
+watermark_ref = "signature_light"
 format_ref = "auto"
-padding_percent = 3.0
-no_upscale = true
-
-[profiles.stretch]
-background_ref = "stretch"
-watermark_ref = "standard"
-format_ref = "auto"
-padding_percent = 0.0
-no_upscale = true
-
-[profiles.stretch_frame]
-background_ref = "stretch"
-watermark_ref = "standard"
-format_ref = "auto"
-padding_percent = 3.0
+padding_percent = 4.0
+border_width = 1
+border_color = "#1a1a1a"
 no_upscale = true
 
 [profiles.average]
 background_ref = "average"
-watermark_ref = "standard"
+watermark_ref = "signature_light"
 format_ref = "auto"
-padding_percent = 3.0
+padding_percent = 4.0
+border_width = 1
+border_color = "#1a1a1a"
 no_upscale = true
 
-[profiles.average_frame]
-background_ref = "average"
-watermark_ref = "standard"
+[profiles.stretch]
+background_ref = "stretch"
+watermark_ref = "signature_light"
 format_ref = "auto"
-padding_percent = 3.0
-border_width = 1
-border_color = "#000000"
-no_upscale = true
-
-[profiles.white_frame]
-background_ref = "solid_white"
-watermark_ref = "standard"
-format_ref = "square"
-padding_percent = 3.0
-border_width = 1
-border_color = "#000000"
-no_upscale = true
-
-[profiles.black_frame]
-background_ref = "solid_black"
-watermark_ref = "standard"
-format_ref = "square"
-padding_percent = 3.0
-border_width = 1
-border_color = "#ffffff"
-no_upscale = true
-
-# --- Profiles Recommendation ---
-
-[profiles.street]
-background_ref = "solid_dark"
-watermark_ref = "standard"
-format_ref = "portrait"
-padding_percent = 8.0
-no_upscale = true
-
-[profiles.clean]
-background_ref = "solid_white"
-watermark_ref = "standard"
-format_ref = "portrait"
-padding_percent = 5.0
-border_width = 1
-border_color = "#e0e0e0"
 no_upscale = true

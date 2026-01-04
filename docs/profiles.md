@@ -72,24 +72,24 @@ height = 1920
 type = "fixed"
 width = 1080 # px
 height = 566 # px
+padding_percent = 0.0
 
 [formats.auto]
 type = "auto"
 from_list = ["square", "portrait", "story"]
+padding_percent = 0.0
 
 # --- Profiles ---
 [profiles.default]
 background_ref = "solid_black"
 watermark_ref = "standard"
 format_ref = "auto"
-padding_percent = 5.0
 no_upscale = true
 
 [profiles.blur_story]
 background_ref = "blur_hard"
 watermark_ref = "standard"
 format_ref = "story"
-padding_percent = 0.0
 no_upscale = true
 
 [profiles.framed_blur]
@@ -130,17 +130,18 @@ type Profile struct {
     BackgroundRef  string   `toml:"background_ref"`
     WatermarkRef   string   `toml:"watermark_ref"`
     FormatRef      string   `toml:"format_ref"`
-    PaddingPercent float64  `toml:"padding_percent"`
+    PaddingPercent *float64 `toml:"padding_percent"`
     BorderWidth    int      `toml:"border_width"`
     BorderColor    string   `toml:"border_color"`
     NoUpscale      bool     `toml:"no_upscale"`
 }
 
 type Format struct {
-    Type     string   `toml:"type"`
-    Width    int      `toml:"width"`
-    Height   int      `toml:"height"`
-    FromList []string `toml:"from_list"`
+    Type           string   `toml:"type"`
+    Width          int      `toml:"width"`
+    Height         int      `toml:"height"`
+    FromList       []string `toml:"from_list"`
+    PaddingPercent float64  `toml:"padding_percent"`
 }
 
 type Background struct {
